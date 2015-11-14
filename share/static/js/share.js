@@ -41,7 +41,7 @@ $(function() {
       // Facebook
       if(opts.provider == "facebook") {
         $(this).replaceWith('<a class="share-facebook-button button" href="http://www.facebook.com/share.php?u='+ url +'" target="_blank"></a><div class="share-facebook-count count">0</div>');
-        $.getJSON('http://graph.facebook.com/'+url+'&callback=?', function(data) {  
+        $.getJSON('http://graph.facebook.com/'+url+'', function(data) {  
             $('.share-facebook-count').text(data.shares);
         });    
       }
