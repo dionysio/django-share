@@ -1,6 +1,6 @@
 <div id="twitter-placeholder"></div>
 <script type="text/javascript">
 	$(function() {
-	    $("#twitter-placeholder").share({provider: 'twitter'});
+		$("#twitter-placeholder").share({provider: 'twitter'{% if url %}, url: '{{ url }}'{% endif %}});
 	})
- </script>
+</script>

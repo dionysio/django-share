@@ -1,6 +1,6 @@
 <div id="facebook-placeholder"></div>
 <script type="text/javascript">
 	$(function() {
-		$("#facebook-placeholder").share({provider: 'facebook'});
+		$("#facebook-placeholder").share({provider: 'facebook'{% if url %}, url: '{{ url }}'{% endif %}});
 	});
- </script>
+</script>

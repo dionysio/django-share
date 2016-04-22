@@ -1,6 +1,6 @@
 <div id="pinterest-placeholder"></div>
 <script type="text/javascript">
 	$(function() {
-	    $("#pinterest-placeholder").share({provider: 'pinterest'});
+		$("#pinterest-placeholder").share({provider: 'pinterest'{% if url %}, url: '{{ url }}'{% endif %}});
 	});
- </script>
+</script>

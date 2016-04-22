@@ -24,21 +24,22 @@ def share_js():
 
 
 class ShareNode(Node):
-    def __init__(self, providers=None):
+    def __init__(self, providers=None, url=None):
         self.providers = providers
+        self.url = url
 
     def render(self, context):
         return render_to_string(
             'share/links.html',
             {
                 'providers': self.providers,
-                'url': context['request'].build_absolute_uri()
+                'url': self.url or context['request'].build_absolute_uri()
             },
             context_instance=context)
 
 
 @register.tag
-def share(parser, token):
+def share(parser, token, url=None):
     args = token.split_contents()
 
     if len(args) == 1:
@@ -47,4 +48,4 @@ def share(parser, token):
         args.pop(0)
         providers = args
 
-    return ShareNode(providers)
+    return ShareNode(providers, url)
