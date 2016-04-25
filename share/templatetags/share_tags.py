@@ -2,7 +2,7 @@ try:
     import urlparse
 except:
     from urllib import parse as urlparse
-from django.template import Library, TemplateSyntaxError, Node
+from django.template import Library
 from django.utils.http import urlquote
 from django.conf import settings
 from share.settings import *
@@ -23,29 +23,16 @@ def share_js():
         + "js/share.js' type='text/javascript'></script>"
 
 
-class ShareNode(Node):
-    def __init__(self, providers=None, url=None):
-        self.providers = providers
-        self.url = url
-
-    def render(self, context):
-        return render_to_string(
-            'share/links.html',
-            {
-                'providers': self.providers,
-                'url': self.url or context['request'].build_absolute_uri()
-            },
-            context_instance=context)
-
-
-@register.tag
-def share(parser, token, url=None):
-    args = token.split_contents()
-
-    if len(args) == 1:
-        providers = SHARE_PROVIDERS
+@register.inclusion_tag('share/links.html', takes_context=True)
+def share(context, *args, **kwargs):
+    providers = kwargs.get('providers', None)
+    if providers:
+        providers = {'main': providers.split()}
     else:
-        args.pop(0)
-        providers = args
+        providers = SHARE_PROVIDERS
+    url = context['request'].build_absolute_uri(kwargs.get('url', None))
 
-    return ShareNode(providers, url)
+    return context.update({
+        'providers': providers,
+        'url': url
+    })
