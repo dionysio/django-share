@@ -1,6 +1,6 @@
-<div id="facebook-placeholder"></div>
+<div id="facebook-placeholder{% if share_id %}-{{ share_id  }}{% endif %}"></div>
 <script type="text/javascript">
 	$(function() {
-		$("#facebook-placeholder").share({provider: 'facebook'});
+		$("#facebook-placeholder{% if share_id %}-{{ share_id  }}{% endif %}").share({provider: 'facebook'{% if url %}, url: '{{ url }}'{% endif %}});
 	});
- </script>
+</script>

@@ -1,5 +1,8 @@
-import urlparse
-from django.template import Library, TemplateSyntaxError, Node
+try:
+    import urlparse
+except:
+    from urllib import parse as urlparse
+from django.template import Library
 from django.utils.http import urlquote
 from django.conf import settings
 from share.settings import *
@@ -7,28 +10,33 @@ from django.template.loader import render_to_string
 
 register = Library()
 
+
 @register.simple_tag
 def share_css():
-	return "<link href='" + settings.STATIC_URL +"css/share.css' type='text/css' rel='stylesheet' />"
+    return "<link href='" + settings.STATIC_URL \
+        + "css/share.css' type='text/css' rel='stylesheet' />"
+
 
 @register.simple_tag
 def share_js():
-	return "<script src='" + settings.STATIC_URL +"js/share.js' type='text/javascript'></script>"
+    return "<script src='" + settings.STATIC_URL \
+        + "js/share.js' type='text/javascript'></script>"
 
-class ShareNode(Node):
-  def __init__(self, providers=None):
-    self.providers = providers
-  def render(self, context):
-    return render_to_string('share/links.html', {'providers': self.providers, 'url': context['request'].build_absolute_uri()}, context_instance=context)
 
-@register.tag
-def share(parser, token):
-  args = token.split_contents()
+@register.inclusion_tag('share/links.html', takes_context=True)
+def share(context, *args, **kwargs):
+    providers = kwargs.get('providers', None)
+    if providers:
+        providers = {'main': providers.split()}
+    else:
+        providers = SHARE_PROVIDERS
+    context['providers'] = providers
 
-  if len(args) == 1:
-    providers = SHARE_PROVIDERS
-  else:
-    args.pop(0)
-    providers = args
+    url = kwargs.get('url', None)
+    if url:
+        url = context['request'].build_absolute_uri(url)
+        context['url'] = url
 
-  return ShareNode(providers)
+    context['share_id'] = kwargs.get('share_id', None)
+
+    return context
