@@ -30,9 +30,13 @@ def share(context, *args, **kwargs):
         providers = {'main': providers.split()}
     else:
         providers = SHARE_PROVIDERS
-    url = context['request'].build_absolute_uri(kwargs.get('url', None))
+    context['providers'] = providers
 
-    return context.update({
-        'providers': providers,
-        'url': url
-    })
+    url = kwargs.get('url', None)
+    if url:
+        url = context['request'].build_absolute_uri(url)
+        context['url'] = url
+
+    context['share_id'] = kwargs.get('share_id', None)
+
+    return context
